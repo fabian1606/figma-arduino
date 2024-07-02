@@ -13,10 +13,12 @@ export default defineNuxtRouteMiddleware
                     if (res) {
                         return(true);
                     } else {
-                        console.log('no auth redirect');
+                        console.log('auth redirect');
                         const authUrl = `https://www.figma.com/oauth?redirect_uri=${redirectUrl}&response_type=code&state=8TCNJE36S3MyBee5wFLxvwVL&scope=file_read&client_id=${runtimeConfig.public.FIGMA_CLIENT_ID}`;
                         // window.location.href = authUrl;
+                        //redirect to figma auth
                         authStore.loggedIn = false;
+                        return navigateTo(authUrl, { external: true });
                     }
                 });
         }
