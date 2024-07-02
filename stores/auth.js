@@ -12,6 +12,7 @@ export const userStore = defineStore("auth", {
         token: null,
         expires_in: null,
         refresh_token: null,
+        json: null,
       },
     };
   },
@@ -42,13 +43,15 @@ export const userStore = defineStore("auth", {
             useFetch('/api/figmaAuth/' + code,{method: 'POST', body: {redirect: redirectUrl}})
               .then((res) => {
                 console.log('figmaAuth', res);
-                  resolve(true);
-                  this.authInfo.id = response.user_id;
-                  this.authInfo.token = response.access_token;
-                  this.authInfo.expires_in = response.expires_in;
-                  this.authInfo.refresh_token = response.refresh_token;
-                  this.loggedIn = true;
-                  this.loggedIn = true;
+                this.authInfo.id = res.user_id;
+                this.authInfo.token = res.access_token;
+                this.authInfo.expires_in = res.expires_in;
+                this.authInfo.refresh_token = res.refresh_token;
+                this.loggedIn = true;
+                this.loggedIn = true;
+                this.json = JSON.stringify(res);
+                console.log('this.loggedIn', this.loggedIn);
+                resolve(this.json);
               })
               .catch((error) => {
                 console.error('Error fetching token:', error);

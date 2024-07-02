@@ -30,11 +30,9 @@ export default defineEventHandler(async (event) => {
                     }
                 }
             )
-            // axios.get('https://httpbin.org/get')
                 .then((response) => {
-                    if (response.status === 200) {
+                    if (response.status === 200 && response.data) {
                         console.log('##################################### response 200 ok');
-                        setCookie(event,"figmaAuth", JSON.stringify(response.data));
                         resolve(response.data);
                     }
                     else {
