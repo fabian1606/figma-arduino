@@ -21,24 +21,25 @@ export const userStore = defineStore("auth", {
     async checkAuth(code) {
       console.log('checkAuth');
       return new Promise((resolve, reject) => {
-          const cookie =  useCookie('figmaAuth');
+        const cookie =  useCookie('figmaAuth');
+        console.log('cookie', cookie.value);
+        if (this.loggedIn) {
+          resolve(true);
+        }
+        else if (cookie.value) {
           console.log('cookie', cookie.value);
-          if (this.loggedIn) {
-            resolve(true);
-          }
-          else if (cookie.value) {
-            console.log('cookie', cookie.value);
-            const figmaAuth = cookie.value;
-            this.authInfo.id = figmaAuth.user_id;
-            this.authInfo.token = figmaAuth.access_token;
-            this.expires_in = figmaAuth.expires_in;
-            console.log('figmaAuth', figmaAuth);
-            this.loggedIn = true;
-            resolve(true);
-          }
-          else if (code) {
-            console.log('code', code);
-            useFetch('/api/figmaAuth/' + code)
+          const figmaAuth = cookie.value;
+          this.authInfo.id = figmaAuth.user_id;
+          this.authInfo.token = figmaAuth.access_token;
+          this.expires_in = figmaAuth.expires_in;
+          console.log('figmaAuth', figmaAuth);
+          this.loggedIn = true;
+          resolve(true);
+        }
+        else if (code) {
+          console.log('code', code);
+          const redirectUrl = useRequestURL().protocol + "//" + useRequestURL().host;
+            useFetch('/api/figmaAuth/' + code,{method: 'POST', body: {redirect: redirectUrl}})
               .then((res) => {
                 console.log('figmaAuth', res);
                   resolve(true);

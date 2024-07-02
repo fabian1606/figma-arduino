@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 export default defineEventHandler(async (event) => {
-        // get the code from the query
+        const body = await readBody(event)
+        const redirect = body.redirect;
+        if(!redirect) return {error: 'missing redirect'}
         const code = getRouterParam(event, 'code')
         const runtimeConfig = useRuntimeConfig();
         console.log({
@@ -17,7 +19,7 @@ export default defineEventHandler(async (event) => {
                 new URLSearchParams({
                     client_id: runtimeConfig.public.FIGMA_CLIENT_ID,
                     client_secret: runtimeConfig.FIGMA_CLIENT_SECRET,
-                    redirect_uri: 'http://localhost:3000',
+                    redirect_uri: redirect,
                     code: code,
                     grant_type: 'authorization_code'
 
