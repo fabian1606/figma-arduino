@@ -18,7 +18,7 @@ const { $contentDataService } = useNuxtApp();
 
 const route = useRoute()
 
-const { devmode } = defineProps(['devmode','projectId']);
+const { devmode, projectId } = defineProps(['devmode','projectId']);
 const emits = defineEmits(['enterFigmaEmbedded']);
 
 const box = ref(null);
@@ -129,7 +129,7 @@ const startDrag = (evnt, corner) => {
 const loadCorners = () => {
   if(projectId<22) return;
 
-  $contentDataService.getScreenDistortion(shortId)
+  $contentDataService.getScreenDistortion(projectId)
     .then((response) => {
       corners.value = response;
       // console.log(response, corners.value);

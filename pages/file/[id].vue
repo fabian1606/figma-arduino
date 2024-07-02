@@ -13,7 +13,7 @@
             <option v-for="page in pages" :value="page.nodeId" :key="page.id">{{ page.name }}</option>
         </select>
     </div>
-    <transformDiv @enterFigmaEmbedded="enterFigmaIdPage = true" :devmode="devmode"
+    <transformDiv @enterFigmaEmbedded="enterFigmaIdPage = true" :devmode="devmode" :projectId="fileId"
         @cornerPosUpdate="(event) => $contentDataService.setScreenDistortion(event)">
         <div :class="{ 'figma-container': true, hide: !showUi }">
             <iframe class="figma" ref="figma" style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450"
