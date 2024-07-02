@@ -15,7 +15,7 @@ export default defineNuxtRouteMiddleware
                     } else {
                         console.log('no auth redirect');
                         const authUrl = `https://www.figma.com/oauth?redirect_uri=${redirectUrl}&response_type=code&state=8TCNJE36S3MyBee5wFLxvwVL&scope=file_read&client_id=${runtimeConfig.public.FIGMA_CLIENT_ID}`;
-                        window.location.href = authUrl;
+                        // window.location.href = authUrl;
                         authStore.loggedIn = false;
                     }
                 });
