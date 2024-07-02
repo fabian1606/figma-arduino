@@ -5,6 +5,11 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 
+const runtimeConfig = useRuntimeConfig()
+
+onMounted(() => {
+  console.log(runtimeConfig.public.FIREBASE_API_KEY);
+});
 
 const enterFigmaIdPage = ref(false);
 

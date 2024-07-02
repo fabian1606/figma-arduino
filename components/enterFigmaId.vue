@@ -28,7 +28,7 @@
       </div>
       <div class="recent-file-container">
         <div v-for="file in recent_prototypes" class="recent-file" @click="changeRoute(file.url)">
-          {{ file.fig_file.name }}
+          <!-- {{ file.fig_file.name }} -->
           <img :src="file.thumbnail_url" alt="test">
         </div>
       </div>
@@ -38,8 +38,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { userStore } from '../store/auth.js';
-import figmaervice from '../services/figmaService';
+import { userStore } from '~/stores/auth.js';
+import figmaService from '~/services/figmaService.js';
 
 const router = useRouter()
 
@@ -49,10 +49,6 @@ const userId = ref(null);
 onMounted(() => {
   if (authStore.loggedIn) {
     userId.value = authStore.authInfo.userId;
-    figmaService.getMe(authStore.authInfo.token)
-      .then((res) => {
-        console.log(res);
-      });
   }
 });
 

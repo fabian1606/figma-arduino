@@ -2,14 +2,15 @@ import { getDatabase, ref as dbRef, onValue, set, get } from 'firebase/database'
 import { initializeApp } from 'firebase/app';
 
 // Your web app's Firebase configuration
+const runtimeConfig = useRuntimeConfig();
 const config = {
-  apiKey: "AIzaSyCQheLP694ykHyall-AeDrzpFQoK4qAs2Q",
-  authDomain: "iks-digitaleexponate.firebaseapp.com",
-  projectId: "iks-digitaleexponate",
-  storageBucket: "iks-digitaleexponate.appspot.com",
-  messagingSenderId: "933056814795",
-  appId: "1:933056814795:web:3d1a8f23438e896838054e",
-  databaseURL: "https://iks-digitaleexponate-default-rtdb.europe-west1.firebasedatabase.app/",
+  apiKey: runtimeConfig.public.FIREBASE_API_KEY,
+  authDomain: runtimeConfig.public.FIREBASE_AUTH_DOMAIN,
+  projectId: runtimeConfig.public.FIREBASE_PROJECT_ID,
+  storageBucket: runtimeConfig.public.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: runtimeConfig.public.FIREBASE_MESSAGING_SENDER_ID,
+  appId: runtimeConfig.public.FIREBASE_APP_ID,
+  databaseURL: runtimeConfig.public.FIREBASE_DATABASE_URL,
 };
 
 // Initialize Firebase
