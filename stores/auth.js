@@ -27,7 +27,8 @@ export const userStore = defineStore("auth", {
             resolve(true);
           }
           else if (cookie.value) {
-            const figmaAuth = JSON.parse(cookie.value);
+            console.log('cookie', cookie.value);
+            const figmaAuth = cookie.value;
             this.authInfo.id = figmaAuth.user_id;
             this.authInfo.token = figmaAuth.access_token;
             this.expires_in = figmaAuth.expires_in;

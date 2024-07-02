@@ -17,9 +17,11 @@
         @cornerPosUpdate="(event) => $contentDataService.setScreenDistortion(event)">
         <div :class="{ 'figma-container': true, hide: !showUi }">
             <iframe class="figma" ref="figma" style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450"
-                :src="`https://www.figma.com/embed?embed_host=example&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2F${url}%26hide-ui%3D1%26`"></iframe>
+                :src="`https://www.figma.com/embed?embed_host=example&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2F${url}%26hide-ui%3D1%26content-scaling%3Dfixed%26scaling%3Dcontain%26content-scaling%3Dfixed`"></iframe>
+                <!-- <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FzzpqkQpao2Xv6YKWxVjuKL%2FUntitled%3Fpage-id%3D13%253A25%26node-id%3D13-26%26viewport%3D514%252C626%252C0.35%26t%3Dt0gxLncfCKigtFz2-1%26scaling%3Dmin-zoom%26content-scaling%3Dfixed" allowfullscreen></iframe> -->
             <!-- :src="`https://www.figma.com/embed?embed_host=share&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FdUY2K63pS7K212BmXc9feR%2FScreens%3D0%253A1%26node-id%3D647-3353`"></iframe> -->
-            <!-- src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FdUY2K63pS7K212BmXc9feR%2FScreens%3Fpage-id%3D0%253A1%26node-id%3D647-3353%26viewport%3D-4322%252C-1525%252C0.09%26t%3Di2EoB1EZalKWrxRn-1%26scaling%3Dcontain%26content-scaling%3Dfixed%26starting-point-node-id%3D647%253A3353%26show-proto-sidebar%3D1" allowfullscreen></iframe> -->
+            <!-- src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FdUY2K63pS7K212BmXc9feR%2FScreens%3F
+             page-id%3D0%253A1%26node-id%3D647-3353%26viewport%3D-4322%252C-1525%252C0.09%26t%3Di2EoB1EZalKWrxRn-1%26scaling%3Dcontain%26content-scaling%3Dfixed%26starting-point-node-id%3D647%253A3353%26show-proto-sidebar%3D1" allowfullscreen></iframe> -->
         </div>
     </transformDiv>
 </template>
@@ -75,12 +77,12 @@ const changeStartingNode = (nodeId) => {
 
 const useFigmaApi = async () => {
     await authStore.checkAuth();
-    figmaervice.getFile(authStore.authInfo.token, fileId.value)
+    figmaService.getFile(authStore.authInfo.token, fileId.value)
         .then((res) => {
             const document = res.document;
             canvases.value = document.children.filter((child) => child.type === 'CANVAS');
             if (canvases.value.length > 0) {
-                // console.log(canvases.value[0].id, canvases.value[0].name);
+                console.log(canvases.value[0].id, canvases.value[0].name);
 
             }
             else {
