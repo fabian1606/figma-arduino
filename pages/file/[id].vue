@@ -14,7 +14,7 @@
         </select>
     </div>
     <transformDiv @enterFigmaEmbedded="enterFigmaIdPage = true" :devmode="devmode"
-        @cornerPosUpdate="(event) => ContentDataService.setScreenDistortion(event)">
+        @cornerPosUpdate="(event) => $contentDataService.setScreenDistortion(event)">
         <div :class="{ 'figma-container': true, hide: !showUi }">
             <iframe class="figma" ref="figma" style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450"
                 :src="`https://www.figma.com/embed?embed_host=example&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2F${url}%26hide-ui%3D1%26`"></iframe>
@@ -26,12 +26,14 @@
 
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import ContentDataService from '../services/ContentDataService.js'
-import { connect, frameChanged, setCallbackFunction } from '../services/serial.js'
-import { connectMqtt, publishFrameId } from '../services/mqtt.js'
+// import ContentDataService from '~/utils/ContentDataService.js'
+// import { connect, frameChanged, setCallbackFunction } from '~/utils/serial.js'
+// import { connectMqtt, publishFrameId } from '../../utils/mqtt.js'
 import { useRoute } from 'vue-router'
-import figmaervice from '../services/figmaService.js'
-import { userStore } from '../store/auth.js';
+// import figmaervice from '~/utils/figmaService.js'
+import { userStore } from '~/stores/auth.js';
+
+const { $contentDataService } = useNuxtApp();
 
 const authStore = userStore();
 
@@ -40,7 +42,7 @@ const selectedFrameId = ref("");
 
 const figma = ref(null);
 const url = ref("");
-const origin = ref(window.location.origin);
+const origin = ref("");
 const devNavigateTo = ref("");
 const showUi = ref(true);
 const fileId = ref("");
@@ -107,7 +109,8 @@ const pages = computed(() => {
 
 // on Mounted
 onMounted(() => {
-    url.value = encodeURIComponent(route.params.id);
+    origin.value = useRequestURL().protocol+"//"+useRequestURL().host;
+    url.value = useRoute().params.id;
     url.value = url.value.replace("%253A", "-");
     fileId.value = route.params.id.substring(0, 22);
     connectMqtt();
@@ -167,7 +170,7 @@ const restart = (nodeId) => triggerEvent(navigationCommands.restart, nodeId);
 const navigateToPage = (nodeId) => triggerEvent(navigationCommands.toFrame, nodeId);
 
 const resetScreenDistortion = () => {
-    ContentDataService.setScreenDistortion([])
+    $contentDataService.setScreenDistortion([])
         .then(() => {
             console.log('Screen distortion reset');
             window.location.reload();

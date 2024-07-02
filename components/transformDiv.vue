@@ -1,5 +1,5 @@
 <template>
-  <div id="container" :class="{dev:devmode}" >
+  <div id="container"  :class="{ dev: devmode }">
     <div id="box" ref="box" :class="{ 'invissible-box': !devmode }">
       <slot></slot>
     </div>
@@ -11,8 +11,10 @@
 
 <script setup>
 import { ref, onMounted, watch, defineProps, defineEmits } from 'vue';
-import ContentDataService from '../services/ContentDataService.js';
+// import ContentDataService from '../utils/ContentDataService.js';
 import { useRoute } from 'vue-router'
+
+const { $contentDataService } = useNuxtApp();
 
 const route = useRoute()
 
@@ -104,7 +106,7 @@ function update() {
 function move(evnt) {
   if (currentcorner < 0) return;
   if (corners.value[0] && corners.value[1] && corners.value[2] && corners.value[3])
-    ContentDataService.setScreenDistortion(corners.value);
+    $contentDataService.setScreenDistortion(corners.value);
   console.log(corners.value);
   corners.value[currentcorner] = { x: evnt.pageX, y: evnt.pageY };
   update();
@@ -112,37 +114,31 @@ function move(evnt) {
 
 let currentcorner = -1;
 
-window.addEventListener('load', function () {
-  document.documentElement.style.margin = "0px";
-  document.documentElement.style.padding = "0px";
-  document.body.style.margin = "0px";
-  document.body.style.padding = "0px";
-  update();
-});
+// window.addEventListener('load', function () {
+//   document.documentElement.style.margin = "0px";
+//   document.documentElement.style.padding = "0px";
+//   document.body.style.margin = "0px";
+//   document.body.style.padding = "0px";
+//   update();
+// });
 
 const startDrag = (evnt, corner) => {
   currentcorner = corner;
 };
 
-window.addEventListener('mouseup', function () {
-  currentcorner = -1;
-});
-
-window.addEventListener('mousemove', move);
-
 const loadCorners = () => {
   const id = route.params.id;
   // get the first 20 characters of the id
-  const shortId  = id.substring(0, 22);
-  
-  ContentDataService.getScreenDistortion(shortId)
+  const shortId = id.substring(0, 22);
+
+  $contentDataService.getScreenDistortion(shortId)
     .then((response) => {
       corners.value = response;
       // console.log(response, corners.value);
       update();
     })
     .catch((error) => {
-      if(error === "NO_UUID_PROVIDED"){
+      if (error === "NO_UUID_PROVIDED") {
         console.log('No UUID provided');
         emits("enterFigmaEmbedded");
       } else {
@@ -156,10 +152,16 @@ onMounted(() => {
 
   setInterval(() => {
     if (currentcorner < 0) {
+      window.addEventListener('mouseup', function () {
+        currentcorner = -1;
+      });
+      
+      window.addEventListener('mousemove', move);
       loadCorners();
     }
   }, 1000);
 });
+
 
 </script>
 
@@ -169,7 +171,8 @@ onMounted(() => {
   width: 100%;
   height: 100%;
 }
-#container.dev #box *{
+
+#container.dev #box * {
   background-color: red;
   pointer-events: none;
 }

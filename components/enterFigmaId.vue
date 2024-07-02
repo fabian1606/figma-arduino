@@ -39,7 +39,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { userStore } from '~/stores/auth.js';
-import figmaService from '~/services/figmaService.js';
+import figmaService from '~/utils/figmaService.js';
 
 const router = useRouter()
 
