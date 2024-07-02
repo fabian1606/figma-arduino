@@ -3,7 +3,7 @@ import { userStore } from '~/stores/auth.js';
 export default defineNuxtRouteMiddleware(async (to, from) => {
     const runtimeConfig = useRuntimeConfig();
     const authStore = userStore();
-    const redirectUrl = useRequestURL().protocol + "://" + useRequestURL().host;
+    const redirectUrl = useRequestURL().protocol + "//" + useRequestURL().host;
 
     if (!authStore.loggedIn) {
         const res = await authStore.checkAuth(to.query.code);
