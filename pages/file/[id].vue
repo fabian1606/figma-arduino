@@ -115,7 +115,7 @@ onMounted(() => {
     url.value = useRoute().params.id;
     url.value = url.value.replace("%253A", "-");
     fileId.value = route.params.id.substring(0, 22);
-    connectMqtt();
+    // connectMqtt();
     useFigmaApi();
     var css = '<style type="text/css">' +
         'body{background-color:red;} ' +
@@ -130,7 +130,21 @@ onMounted(() => {
             if (event.data.data.presentedNodeId !== currentframe.value) {
                 currentframe.value = event.data.data.presentedNodeId;
                 frameChanged(event.data.data.presentedNodeId);
-                publishFrameId("test", event.data.data.presentedNodeId);
+                useFetch('/api/mqtt/sendMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        topic: `figma:${fileId.value}`,
+                        client: 'mqtt://mqtt.hfg.design',
+                        message: event.data.data.presentedNodeId,
+                    }),
+                })
+                .catch((error) => {
+                    console.log('Error sending mqtt message', error);
+                });
+                // publishFrameId("test", event.data.data.presentedNodeId);
             }
         }
     });
