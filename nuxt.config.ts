@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     FIGMA_CLIENT_SECRET: process.env.FIGMA_CLIENT_SECRET,
     public: {
-      NUXT_FIGMA_CLIENT_ID: process.env.NUXT_FIGMA_CLIENT_ID,
+      FIGMA_CLIENT_ID: process.env.FIGMA_CLIENT_ID,
       FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
       FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
       FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,

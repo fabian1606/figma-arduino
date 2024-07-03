@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
         const code = getRouterParam(event, 'code')
         const runtimeConfig = useRuntimeConfig();
         console.log({
-            client_id: runtimeConfig.public.NUXT_FIGMA_CLIENT_ID,
+            client_id: runtimeConfig.public.FIGMA_CLIENT_ID,
                     client_secret: runtimeConfig.FIGMA_CLIENT_SECRET,
                     redirect_uri: 'http://localhost:3000/',
                     code: code,
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
         return new Promise((resolve, reject) => {
             axios.post('https://www.figma.com/api/oauth/token',
                 new URLSearchParams({
-                    client_id: runtimeConfig.public.NUXT_FIGMA_CLIENT_ID,
+                    client_id: runtimeConfig.public.FIGMA_CLIENT_ID,
                     client_secret: runtimeConfig.FIGMA_CLIENT_SECRET,
                     redirect_uri: redirect,
                     code: code,

@@ -12,7 +12,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             cookie.value = res;
             return true;
         } else {
-            const authUrl = `https://www.figma.com/oauth?redirect_uri=${redirectUrl}&response_type=code&state=8TCNJE36S3MyBee5wFLxvwVL&scope=file_read&client_id=${runtimeConfig.public.NUXT_FIGMA_CLIENT_ID}`;
+            const authUrl = `https://www.figma.com/oauth?redirect_uri=${redirectUrl}&response_type=code&state=8TCNJE36S3MyBee5wFLxvwVL&scope=file_read&client_id=${runtimeConfig.public.FIGMA_CLIENT_ID}`;
             authStore.loggedIn = false;
             return navigateTo(authUrl, { external: true });
         }
