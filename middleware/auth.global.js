@@ -8,6 +8,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (!authStore.loggedIn) {
         const res = await authStore.checkAuth(to.query.code);
         if (res) {
+            if(res === true) return true;
             const cookie = useCookie('figmaAuth');
             cookie.value = res;
             return true;

@@ -1,10 +1,10 @@
 <template>
-  <div id="container"  :class="{ dev: devmode }">
-    <div id="box" ref="box" :class="{ 'invissible-box': !devmode }">
+  <div id="container"  :class="{ dev: props.devmode }">
+    <div id="box" ref="box" :class="{ 'invissible-box': !props.devmode }">
       <slot></slot>
     </div>
     <div v-for="(corner, index) in corners" :key="index" :id="'marker' + index"
-      :class="{ invissible: !devmode, corner: true }" :style="{ left: corner.x + 'px', top: corner.y + 'px' }"
+      :class="{ invissible: !props.devmode, corner: true }" :style="{ left: corner.x + 'px', top: corner.y + 'px' }"
       @mousedown="startDrag($event, index)"></div>
   </div>
 </template>
@@ -18,7 +18,7 @@ const { $contentDataService } = useNuxtApp();
 
 const route = useRoute()
 
-const { devmode, projectId } = defineProps(['devmode','projectId']);
+const props = defineProps(['devmode','projectId']);
 const emits = defineEmits(['enterFigmaEmbedded']);
 
 const box = ref(null);
@@ -106,8 +106,8 @@ function update() {
 function move(evnt) {
   if (currentcorner < 0) return;
   if (corners.value[0] && corners.value[1] && corners.value[2] && corners.value[3])
-    $contentDataService.setScreenDistortion(corners.value);
-  console.log(corners.value);
+  // console.log(props.projectId);
+    $contentDataService.setScreenDistortion(props.projectId,corners.value);
   corners.value[currentcorner] = { x: evnt.pageX, y: evnt.pageY };
   update();
 }
@@ -127,9 +127,9 @@ const startDrag = (evnt, corner) => {
 };
 
 const loadCorners = () => {
-  if(projectId<22) return;
+  if(props.projectId.length<22) return;
 
-  $contentDataService.getScreenDistortion(projectId)
+  $contentDataService.getScreenDistortion(props.projectId)
     .then((response) => {
       corners.value = response;
       // console.log(response, corners.value);

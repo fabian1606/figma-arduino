@@ -16,7 +16,7 @@
     <transformDiv @enterFigmaEmbedded="enterFigmaIdPage = true" :devmode="devmode" :projectId="fileId"
         @cornerPosUpdate="(event) => $contentDataService.setScreenDistortion(event)">
         <div :class="{ 'figma-container': true, hide: !showUi }">
-            <iframe class="figma" ref="figma" style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450"
+            <iframe v-if="url" class="figma" ref="figma" style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450"
                 :src="`https://www.figma.com/embed?embed_host=example&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2F${url}%26hide-ui%3D1%26content-scaling%3Dfixed%26scaling%3Dcontain%26content-scaling%3Dfixed`"></iframe>
                 <!-- <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FzzpqkQpao2Xv6YKWxVjuKL%2FUntitled%3Fpage-id%3D13%253A25%26node-id%3D13-26%26viewport%3D514%252C626%252C0.35%26t%3Dt0gxLncfCKigtFz2-1%26scaling%3Dmin-zoom%26content-scaling%3Dfixed" allowfullscreen></iframe> -->
             <!-- :src="`https://www.figma.com/embed?embed_host=share&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FdUY2K63pS7K212BmXc9feR%2FScreens%3D0%253A1%26node-id%3D647-3353`"></iframe> -->
@@ -28,9 +28,6 @@
 
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-// import ContentDataService from '~/utils/ContentDataService.js'
-// import { connect, frameChanged, setCallbackFunction } from '~/utils/serial.js'
-// import { connectMqtt, publishFrameId } from '../../utils/mqtt.js'
 import { useRoute } from 'vue-router'
 // import figmaervice from '~/utils/figmaService.js'
 import { userStore } from '~/stores/auth.js';
@@ -77,27 +74,30 @@ const changeStartingNode = (nodeId) => {
 
 const useFigmaApi = async () => {
     await authStore.checkAuth();
+    console.log(authStore.authInfo);
     figmaService.getFile(authStore.authInfo.token, fileId.value)
         .then((res) => {
             const document = res.document;
             canvases.value = document.children.filter((child) => child.type === 'CANVAS');
+            console.log(document);
             if (canvases.value.length > 0) {
                 console.log(canvases.value[0].id, canvases.value[0].name);
-
             }
             else {
+                console.log('No canvas found', document.children);
             }
-            console.log('No canvas found', document.children);
         })
         .catch((error) => {
-            console.log(error);
+            console.log("error fetching figma document file:", error);
         });
 }
 
 const pages = computed(() => {
     const pages = [];
     canvases.value.forEach((canvas) => {
-        canvas.nodeId = canvas.prototypeStartNodeID || canvas.children[0].id;
+        // get all canvase children of type frame
+        const frames = canvas.children.filter((child) => child.type === 'FRAME');
+        canvas.nodeId = canvas.prototypeStartNodeID || frames[0].id;
         pages.push(canvas);
 
         canvas.flowStartingPoints.forEach((flow) => {
@@ -117,10 +117,6 @@ onMounted(() => {
     fileId.value = route.params.id.substring(0, 22);
     // connectMqtt();
     useFigmaApi();
-    var css = '<style type="text/css">' +
-        'body{background-color:red;} ' +
-        '</style>';
-    figma.value.append(css);
     console.log(origin.value);
     setCallbackFunction(navigateToPage);
     window.addEventListener("message", (event) => {
@@ -186,7 +182,7 @@ const restart = (nodeId) => triggerEvent(navigationCommands.restart, nodeId);
 const navigateToPage = (nodeId) => triggerEvent(navigationCommands.toFrame, nodeId);
 
 const resetScreenDistortion = () => {
-    $contentDataService.setScreenDistortion([])
+    $contentDataService.setScreenDistortion(fileId,[])
         .then(() => {
             console.log('Screen distortion reset');
             window.location.reload();

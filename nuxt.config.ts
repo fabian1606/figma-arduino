@@ -19,8 +19,8 @@ export default defineNuxtConfig({
     }
   },
   routeRules: {
-    'api/figma/**': {
-      proxy: { to: "https://www.figma.com**", },
+    '/api/figma/**': {  
+      proxy: { to: "https://api.figma.com/**", },
     }
   },
 })

@@ -35,8 +35,9 @@ export default defineNuxtPlugin(() => {
       return dbRefInstance;
     }
 
-    async setScreenDistortion(corners) {
+    async setScreenDistortion(id, corners) {
       return new Promise((resolve, reject) => {
+        // console.log("id", id);
         set(dbRef(db, `${id}/ScreenDistortion`), corners)
           .then(() => {
             resolve("Data successfully written!");
@@ -48,8 +49,7 @@ export default defineNuxtPlugin(() => {
     }
 
     async getScreenDistortion(newId) {
-      // find id
-      id = newId;
+      const id = newId;
       return new Promise((resolve, reject) => {
         if (!id) {
           reject("NO_UUID_PROVIDED");
