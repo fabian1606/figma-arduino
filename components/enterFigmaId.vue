@@ -65,7 +65,7 @@ const changeRoute = (url) => {
   url = url.replace("https://www.figma.com/proto/","");
   const encodedUrl = encodeURIComponent(url);
   console.log(encodedUrl);
-  router.push(`/file/${encodedUrl}`);
+  router.push(`/file/${encodedUrl}/0:1`);
 };
 
 const extractFigmaId = () => {

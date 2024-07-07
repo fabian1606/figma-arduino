@@ -18,16 +18,25 @@ const { $contentDataService } = useNuxtApp();
 
 const route = useRoute()
 
-const props = defineProps(['devmode','projectId']);
+const props = defineProps(['devmode','projectId','flowId','size']);
 const emits = defineEmits(['enterFigmaEmbedded']);
 
 const box = ref(null);
 const corners = ref([
-  { x: 100, y: 100 },
-  { x: 900, y: 100 },
-  { x: 100, y: 550 },
-  { x: 900, y: 550 }
+  { x: 0, y: 0 },
+  { x: props.size.x, y: 0 },
+  { x: 0, y: props.size.y },
+  { x: props.size.x, y: props.size.y }
 ]);
+
+watch(() => props.size, () => {
+  corners.value = [
+    { x: 0, y: 0 },
+    { x: props.size.x, y: 0 },
+    { x: 0, y: props.size.y },
+    { x: props.size.x, y: props.size.y }
+  ];
+});
 
 function adj(m) {
   return [
@@ -106,21 +115,12 @@ function update() {
 function move(evnt) {
   if (currentcorner < 0) return;
   if (corners.value[0] && corners.value[1] && corners.value[2] && corners.value[3])
-  // console.log(props.projectId);
-    $contentDataService.setScreenDistortion(props.projectId,corners.value);
+    $contentDataService.setScreenDistortion(`${props.projectId}/${props.flowId}`,corners.value);
   corners.value[currentcorner] = { x: evnt.pageX, y: evnt.pageY };
   update();
 }
 
 let currentcorner = -1;
-
-// window.addEventListener('load', function () {
-//   document.documentElement.style.margin = "0px";
-//   document.documentElement.style.padding = "0px";
-//   document.body.style.margin = "0px";
-//   document.body.style.padding = "0px";
-//   update();
-// });
 
 const startDrag = (evnt, corner) => {
   currentcorner = corner;
@@ -129,7 +129,7 @@ const startDrag = (evnt, corner) => {
 const loadCorners = () => {
   if(props.projectId.length<22) return;
 
-  $contentDataService.getScreenDistortion(props.projectId)
+  $contentDataService.getScreenDistortion(`${props.projectId}/${props.flowId}`)
     .then((response) => {
       corners.value = response;
       // console.log(response, corners.value);
