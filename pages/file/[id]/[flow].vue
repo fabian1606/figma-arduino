@@ -1,41 +1,77 @@
 <template>
-    <div class="dev-container" v-if="devmode">
-        currentframe: {{ currentframe + " " + computedFrameName }}
-        <button @click="navigateToPage(devNavigateTo)">Navigate to Page <input v-model="devNavigateTo"
-                type="text"></button>
-        <button @click="nextPage()">NextPage</button>
-        <button @click="previousPage()">PreviousPage</button>
-        <button @click="restart()">Restart</button>
-        <button @click="resetScreenDistortion()">Reset Screen Distortion</button>
-        <button @click="connect()">connect Serial</button>
-        <div class="settings">
-            <label for="flow">flow to show:</label>
-            <select name="selectFrame" id="flow" v-model="selectedFrameId"
-                @change="changeStartingNode(selectedFrameId)">
-                <option value="0:1" selected>default</option>
-                <option v-for="page in pages" :value="page.nodeId" :key="page.id">{{ page.name }}</option>
-            </select>
-            <label for="allow-mqtt">send mqtt messages on event:</label>
-            <input type="checkbox" id="allow-mqtt" v-model="config.allowMqtt" @change="setConfig()">
-            <label for="sync-events">sync events between windows:</label>
-            <input type="checkbox" id="sync-events" v-model="config.syncEvents" @change="setConfig()">
-            <label for="allow-flowchange">allow changes between flows</label>
-            <input type="checkbox" id="allow-flowchange" v-model="config.allowFlowchange" @change="setConfig()">
+    <div>
+        <div class="dev-container" v-if="devmode">
+            currentframe: {{ currentframe + " " + computedFrameName }}
+            <button @click="navigateToPage(devNavigateTo)">Navigate to Page <input v-model="devNavigateTo"
+                    type="text"></button>
+            <button @click="nextPage()">NextPage</button>
+            <button @click="previousPage()">PreviousPage</button>
+            <button @click="restart()">Restart</button>
+            <button @click="resetScreenDistortion()">Reset Screen Distortion</button>
+            <button @click="connect()">connect Serial</button>
+            <label for="show-settings">show settings</label>
+            <input type="checkbox" id="show-settings" v-model="showSettings">
+            <div class="settings" v-if="showSettings">
+                <label for="flow">flow to show:</label>
+                <select name="selectFrame" id="flow" v-model="selectedFrameId"
+                    @change="changeStartingNode(selectedFrameId)">
+                    <option value="0:1" selected>default</option>
+                    <option v-for="page in pages" :value="page.nodeId" :key="page.id">{{ page.name }}</option>
+                </select>
+                <label for="allow-mqtt">send mqtt messages on event:</label>
+                <input type="checkbox" id="allow-mqtt" v-model="config.allowMqtt" @change="setConfig()">
+                <label for="sync-events">sync events between windows:</label>
+                <input type="checkbox" id="sync-events" v-model="config.syncEvents" @change="setConfig()">
+                <label for="allow-flowchange">allow changes between flows</label>
+                <input type="checkbox" id="sync-events" v-model="config.allowFlowchange" @change="setConfig()">
+                <label for="precence-detector">activate precence Detector</label>
+                <input type="checkbox" id="precence-detector" v-model="config.precenceDetector" @change="setConfig()">
+                <button v-if="config.precenceDetector" @click="hideObjectDetectionPreview = false">
+                    PrecenceDetectorPreview
+                </button>
+            </div>
+            <div class="precenceSettings" v-if="showSettings">
+                <div>
+                    <label for="on-precence">event on Precence</label>
+                    <input type="text" id="on-precence" placeholder="enter frame Name" v-model="precence">
+                    <input type="text" placeholder="(enter the flow name)" v-model="precenceFlow">
+                    <button
+                        @click="addPrecenceEvent()">add</button>
+                    <div v-for="(events, index) in config.precenceDetectorEvents?.precenceEvents || []">
+                        <p>{{ events }}<button @click="removePrecenceEvent(index)">remove</button></p>
+                    </div>
+                </div>
+                <div>
+                    <label for="on-no-precence">event without Precence</label>
+                    <input type="text" id="on-no-precence" placeholder="enter frame Name" v-model="noPrecence">
+                    <input type="text" placeholder="(enter the flow name)" v-model="noPrecenceFlow">
+                    <button
+                    @click="addNoPrecenceEvent()">add</button>
+                    <div v-for="(events, index) in config.precenceDetectorEvents?.noPrecenceEvents || []">
+                        <p>{{ events }}<button @click="removeNoPrecenceEvent(index)">remove</button></p>
+                    </div>
+                </div>
+            </div>
         </div>
+        <objectDetector v-if="config.precenceDetector" @precence="triggerPrecenceEvents()"  @noPrecence="triggerNoPrecenceEvents()" :hide="hideObjectDetectionPreview"
+            @close="hideObjectDetectionPreview = true" />
+        <transformDiv @enterFigmaEmbedded="enterFigmaIdPage = true" :devmode="devmode" :projectId="fileId"
+            :flowId="currentFlow" :size="windowSize"
+            @cornerPosUpdate="(event) => $contentDataService.setScreenDistortion(event)">
+            <div :class="{ 'figma-container': true, hide: !showUi }">
+                <iframe v-if="url" class="figma" ref="figma" style="border: 1px solid rgba(0, 0, 0, 0.1);"
+                    :width="windowSize.x" :height="windowSize.y"
+                    :src="`https://www.figma.com/embed?embed_host=example&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2F${url}%26hide-ui%3D1%26content-scaling%3Dfixed%26scaling%3Dcontain%26content-scaling%3Dfixed`"></iframe>
+                <!-- h                     dUY2K63pS7K212BmXc9feR%2FScreens%3Fpage-id%3D817%3A3%26node-id%3D850-218 -->
+                <!-- https://www.figma.com/proto/dUY2K63pS7K212BmXc9feR/Screens?node-id=647-3353&t=wUS2De4WjqDyVKDl-0&scaling=contain&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=647%3A3353&show-proto-sidebar=1 -->
+                <!-- src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FdUY2K63pS7K212BmXc9feR%2FScreens%3Fpage-id%3D817%253A3%26node-id%3D850-399%26viewport%3D701%252C1238%252C0.14%26t%3DeYKwhHCV9PKc4Onr-1%26scaling%3Dcontain%26content-scaling%3Dfixed%26starting-point-node-id%3D850%253A399%26show-proto-sidebar%3D1" allowfullscreen></iframe> -->
+                <!-- <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FzzpqkQpao2Xv6YKWxVjuKL%2FUntitled%3Fpage-id%3D13%253A25%26node-id%3D13-26%26viewport%3D514%252C626%252C0.35%26t%3Dt0gxLncfCKigtFz2-1%26scaling%3Dmin-zoom%26content-scaling%3Dfixed" allowfullscreen></iframe> -->
+                <!-- :src="`https://www.figma.com/embed?embed_host=share&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FdUY2K63pS7K212BmXc9feR%2FScreens%3D0%253A1%26node-id%3D647-3353`"></iframe> -->
+                <!-- src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FdUY2K63pS7K212BmXc9feR%2FScreens%3F
+        page-id%3D0%253A1%26node-id%3D647-3353%26viewport%3D-4322%252C-1525%252C0.09%26t%3Di2EoB1EZalKWrxRn-1%26scaling%3Dcontain%26content-scaling%3Dfixed%26starting-point-node-id%3D647%253A3353%26show-proto-sidebar%3D1" allowfullscreen></iframe> -->
+            </div>
+        </transformDiv>
     </div>
-    <transformDiv @enterFigmaEmbedded="enterFigmaIdPage = true" :devmode="devmode" :projectId="fileId"
-        :flowId="currentFlow" :size="windowSize"
-        @cornerPosUpdate="(event) => $contentDataService.setScreenDistortion(event)">
-        <div :class="{ 'figma-container': true, hide: !showUi }">
-            <iframe v-if="url" class="figma" ref="figma" style="border: 1px solid rgba(0, 0, 0, 0.1);"
-                :width="windowSize.x" :height="windowSize.y"
-                :src="`https://www.figma.com/embed?embed_host=example&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2F${url}%26hide-ui%3D1%26content-scaling%3Dfixed%26scaling%3Dcontain%26content-scaling%3Dfixed`"></iframe>
-            <!-- <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FzzpqkQpao2Xv6YKWxVjuKL%2FUntitled%3Fpage-id%3D13%253A25%26node-id%3D13-26%26viewport%3D514%252C626%252C0.35%26t%3Dt0gxLncfCKigtFz2-1%26scaling%3Dmin-zoom%26content-scaling%3Dfixed" allowfullscreen></iframe> -->
-            <!-- :src="`https://www.figma.com/embed?embed_host=share&embed_origin=${origin}&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FdUY2K63pS7K212BmXc9feR%2FScreens%3D0%253A1%26node-id%3D647-3353`"></iframe> -->
-            <!-- src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FdUY2K63pS7K212BmXc9feR%2FScreens%3F
-             page-id%3D0%253A1%26node-id%3D647-3353%26viewport%3D-4322%252C-1525%252C0.09%26t%3Di2EoB1EZalKWrxRn-1%26scaling%3Dcontain%26content-scaling%3Dfixed%26starting-point-node-id%3D647%253A3353%26show-proto-sidebar%3D1" allowfullscreen></iframe> -->
-        </div>
-    </transformDiv>
 </template>
 
 <script setup>
@@ -46,7 +82,15 @@ import { userStore } from '~/stores/auth.js';
 
 const { $contentDataService } = useNuxtApp();
 
+const noPrecence = ref("");
+const noPrecenceFlow = ref("");
+const precence = ref("");
+const precenceFlow = ref("");
+
 const authStore = userStore();
+
+const hideObjectDetectionPreview = ref(true);
+const showSettings = ref(false);
 
 const route = useRoute()
 const router = useRouter();
@@ -68,7 +112,7 @@ const devmode = ref(false);
 const canvases = ref([]);
 const frames = ref([]);
 
-const windowSize = ref({ x: 100, y: 100 });
+const windowSize = ref({ x: 800, y: 450 });
 
 const config = ref({
     allowMqtt: false,
@@ -84,9 +128,66 @@ const navigationCommands = {
     restart: 'RESTART'
 }
 
+const triggerPrecenceEvents = () => {
+    if (config.value.precenceDetectorEvents.precenceEvents) {
+        config.value.precenceDetectorEvents.precenceEvents.forEach((event) => {
+                const frame = frames.value.find((fr) => fr.name == event.frameName);
+                if (frame) {
+                    triggerEvent(navigationCommands.toFrame, frame.id);
+                }
+                else {
+                    console.warn("Frame not found", event.frameName);
+                }
+
+                // frameId = frames.value.find((fr) => fr.name == event.frameName);
+                // triggerEvent(navigationCommands.toFrame, event.flowId);
+        });
+    }
+}
+const triggerNoPrecenceEvents = () => {
+    if (config.value.precenceDetectorEvents.noPrecenceEvents) {
+        config.value.precenceDetectorEvents.noPrecenceEvents.forEach((event) => {
+            const frame = frames.value.find((fr) => fr.name == event.frameName);
+            if (frame) {
+                triggerEvent(navigationCommands.toFrame, frame.id);
+            }
+            else {
+                console.warn("Frame not found", event.frameName);
+            }
+        });
+    }
+}
+
+const addNoPrecenceEvent = () => {
+    if (!noPrecence.value) return;
+    if (!config.value.precenceDetectorEvents?.noPrecenceEvents) config.value.precenceDetectorEvents = { precenceEvents: [], noPrecenceEvents: [] };
+    config.value.precenceDetectorEvents.noPrecenceEvents.push({frameName: noPrecence.value, flowId: noPrecenceFlow.value || "*"});
+    setConfig();
+    noPrecence.value = "";
+}
+const addPrecenceEvent = () => {
+    if (!precence.value) return;
+    if (!config.value.precenceDetectorEvents?.precenceEvents) config.value.precenceDetectorEvents = { precenceEvents: [], noPrecenceEvents: [] };
+    config.value.precenceDetectorEvents.precenceEvents.push({frameName: precence.value, flowId: precenceFlow.value || "*"});
+    setConfig();
+    precence.value = "";
+}
+const removeNoPrecenceEvent = (index) => {
+    config.value.precenceDetectorEvents.noPrecenceEvents.splice(index, 1);
+    setConfig();
+}
+const removePrecenceEvent = (index) => {
+    config.value.precenceDetectorEvents.precenceEvents.splice(index, 1);
+    setConfig();
+}
+
 const changeStartingNode = (nodeId) => {
     const urlEncodedUrl = encodeURIComponent(url.value)
-    router.push(`/file/${urlEncodedUrl}/${nodeId}`);
+    // remove %26page-id
+    const pageId = encodeURIComponent(frames.value.find((fr) => fr.id == nodeId).ParentFlow);
+    const urlSplit = urlEncodedUrl.split("node-id");
+    router.push(`/file/${urlSplit[0]}node-id%3D${nodeId.replace(":", "-")}/${nodeId}`);
+    console.log(`/file/${urlEncodedUrl}page-id%3D${pageId}/${nodeId}`);
     navigateToPage(nodeId);
 }
 
@@ -119,6 +220,7 @@ const useFigmaApi = async () => {
             canvases.value = document.children.filter((child) => child.type === 'CANVAS');
             if (canvases.value.length > 0) {
                 computeFigmaFrames(document);
+                serialSendFrames(frames.value);
                 let currentframeOb = frames.value.find((fr) => fr.id == currentFlow.value);
                 if (currentFlow.value === "0:1") {
                     const frames = canvases.value[0].children.filter((child) => child.type === 'FRAME');
@@ -179,16 +281,16 @@ const setConfig = () => {
         })
 }
 
-const onEvent= (msg)=>{
-    if(config.value.syncEvents){
-        if(config.value.allowFlowchange || msg.data.flowId === currentFlow.value || msg.data.flowId === "*"){
-            triggerEvent(msg.type,msg.data.presentedNodeId);
+const onEvent = (msg) => {
+    if (config.value.syncEvents) {
+        if (config.value.allowFlowchange || msg.data.flowId === currentFlow.value || msg.data.flowId === "*") {
+            triggerEvent(msg.type, msg.data.presentedNodeId);
         }
-        else{
+        else {
             console.warn("Flow change not allowed or target frame not found.", config.value);
         }
     }
-    else{
+    else {
         console.warn("Event sync disabled");
     }
 }
@@ -271,19 +373,24 @@ function triggerEvent(type, nodeId) {
 const nextPage = (nodeId) => triggerEvent(navigationCommands.forward, flowId);
 const previousPage = (nodeId) => triggerEvent(navigationCommands.backwards, nodeId);
 const restart = (nodeId) => triggerEvent(navigationCommands.restart, nodeId);
-const navigateToPage = (nodeId, flowId) => {
-  const currentFrameObj = frames.value.find((fr) => fr.id === currentframe.value);
-  const targetFrameObj = frames.value.find((fr) => fr.id === nodeId);
-  
-  if(!flowId) flowId = currentFlow.value;
 
-  $contentDataService.triggerEvent(fileId.value, { type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS', data: { presentedNodeId: nodeId, flowId } })
-  const currentFlowId = currentFrameObj ? currentFrameObj.ParentFlow : "0:1";
-  if (config.value.allowFlowchange || (targetFrameObj && targetFrameObj.ParentFlow === currentFlowId)) {
-    triggerEvent(navigationCommands.toFrame, nodeId);
-  } else {
-    console.warn("Flow change not allowed or target frame not found.");
-  }
+const navigateToPage = (nodeId, flowId) => {
+    const currentFrameObj = frames.value.find((fr) => fr.id === currentframe.value);
+    const targetFrameObj = frames.value.find((fr) => fr.id === nodeId);
+
+    if (!flowId) {
+        console.warn("No flowId provided", flowId);
+        flowId = currentFlow.value;
+    }
+
+    $contentDataService.triggerEvent(fileId.value, { type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS', data: { presentedNodeId: nodeId, flowId } })
+    const currentFlowId = currentFrameObj ? currentFrameObj.ParentFlow : "0:1";
+    if (config.value.allowFlowchange || (currentFlow.value === flowId || flowId === "*")) {
+
+        triggerEvent(navigationCommands.toFrame, nodeId);
+    } else {
+        console.warn("Flow change not allowed or target frame not found. flowId:");
+    }
 };
 
 const resetScreenDistortion = () => {
@@ -317,5 +424,9 @@ const resetScreenDistortion = () => {
     width: 100%;
     height: 100%;
     overflow: show;
+}
+
+.precence-settings {
+    display: inline;
 }
 </style>

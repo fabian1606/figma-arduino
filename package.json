@@ -11,6 +11,11 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
+    "@tensorflow-models/coco-ssd": "^2.2.3",
+    "@tensorflow/tfjs-backend-cpu": "^4.20.0",
+    "@tensorflow/tfjs-backend-webgl": "^4.20.0",
+    "@tensorflow/tfjs-converter": "^4.20.0",
+    "@tensorflow/tfjs-core": "^4.20.0",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.2",

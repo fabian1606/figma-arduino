@@ -13,11 +13,10 @@ export default {
                 .catch(error => {
                     reject(error);
                 });
-            });
-        },
-        getFile(token, key) {
-            return new Promise((resolve, reject) => {
-            console.log('hello',key,token);
+        });
+    },
+    getFile(token, key) {
+        return new Promise((resolve, reject) => {
             axios.get(`/api/figma/v1/files/${key}`,
                 {
                     headers: {
@@ -26,13 +25,12 @@ export default {
                     }
                 })
                 .then(response => {
-                    console.log("response ##############");
-                resolve(response.data);
-            })
-            .catch(error => {
-                console.log("error", error);
-                reject(error);
-            });
-    })
-}
+                    resolve(response.data);
+                })
+                .catch(error => {
+                    console.error("error", error);
+                    reject(error);
+                });
+        })
+    }
 }

@@ -27,10 +27,9 @@ export default defineNuxtPlugin(() => {
       onValue(dbRefInstance, (snapshot) => {
         if (snapshot.exists()) {
           const rawData = snapshot.val();
-          console.log(rawData);
           // get image with the object key from getImage()
         } else {
-          console.log("No data available");
+          console.warn("No data available");
         }
       });
       return dbRefInstance;
@@ -127,7 +126,7 @@ export default defineNuxtPlugin(() => {
               callback(rawData);
             }
           } else {
-            console.log("No data available");
+            console.warn("No data available");
           }
         });
         return dbRefInstance;

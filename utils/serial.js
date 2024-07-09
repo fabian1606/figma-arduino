@@ -36,6 +36,26 @@ export async function connect() {
 export function frameChanged( frame ){
     writeToStream(JSON.stringify({frameId:frame}))
 }
+
+const writeWhenReady = async (line) => {
+    if (outputStream) {
+        await writeToStream(line);
+    } else {
+        setTimeout(() => {
+            writeWhenReady(line);
+        }
+        , 500);
+    }
+}
+
+export function serialSendFrames(frames){
+    const formattedFrames = frames.map(frame => {
+        return {id: frame.id, name: frame.name}
+    })
+    const json = JSON.stringify({frameData: formattedFrames});
+    writeWhenReady(json);
+}
+
 let callbackFunction = null;	
 
 export function setCallbackFunction( callback ){
@@ -48,29 +68,33 @@ async function writeToStream(line) {
         return;
     }
     const writer = outputStream.getWriter();
-    console.log('[SEND]', line);
+    console.log('[Serial] send: ', line);
     await writer.write(line + '\n');
     writer.releaseLock();
 }
 
 async function readLoop() {
-    console.log('Readloop');
 
     while (true) {
         const { value, done } = await reader.read();
         if (value) {
             textContent += value;
             if(value.includes('\n')) {
-                console.log('[readLoop] VALUE', textContent);
+                console.log('[SERIAL] received: ', textContent);
                 try{
                     const json = JSON.parse(textContent)
                     textContent = "";
-                    console.log('JSON', json);
                     if(json.frameId){
-                        console.log('frameId', json.frameId);
+                        console.log('frameId', json.frameId, json.flowId);
                         if(callbackFunction){
-                            callbackFunction(json.frameId);
-                        }
+                            callbackFunction(json.frameId,json.flowId);
+                        }   
+                    }
+                    if(json.log){
+                        console.log('[SERIAL] log: ', json.log);
+                    }
+                    if(json.error){
+                        console.error('[SERIAL] error: ', json.error);
                     }
                 }
                 catch(e){
@@ -81,7 +105,6 @@ async function readLoop() {
 
         }
         if (done) {
-            console.log('[readLoop] DONE', done);
             reader.releaseLock();
             break;
         }

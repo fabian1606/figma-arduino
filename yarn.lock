@@ -1845,6 +1845,47 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/merge-streams/-/merge-streams-2.3.0.tgz#719df7fb41766bc143369eaa0dd56d8dc87c9958"
   integrity sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==
 
+"@tensorflow-models/coco-ssd@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@tensorflow-models/coco-ssd/-/coco-ssd-2.2.3.tgz#3825286569076d6788199c9cb89fb2fa31f7d2f2"
+  integrity sha512-iCLGktG/XhHbP6h2FWxqCKMp/Px0lCp6MZU1fjNhjDHeaWEC9G7S7cZrnPXsfH+NewCM53YShlrHnknxU3SQig==
+
+"@tensorflow/tfjs-backend-cpu@4.20.0", "@tensorflow/tfjs-backend-cpu@^4.20.0":
+  version "4.20.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-backend-cpu/-/tfjs-backend-cpu-4.20.0.tgz#7cc7a31fd91950a0d4d1e922c8e9a8f7e7a3e2cc"
+  integrity sha512-1QRQ6AqAa/VB8JOArf5nY3Dc/QQHXbfuxgdIdQhKrABEHgvlaWt2Vv696UhIlVl75YoNY+vWlCwBdGQIKYfFGw==
+  dependencies:
+    "@types/seedrandom" "^2.4.28"
+    seedrandom "^3.0.5"
+
+"@tensorflow/tfjs-backend-webgl@^4.20.0":
+  version "4.20.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-backend-webgl/-/tfjs-backend-webgl-4.20.0.tgz#920bdda8cce920c183a48d917e34e80cea2e0c43"
+  integrity sha512-M03fJonJGxm2u3SCzRNA2JLh0gxaAye64SEmGAXOehizowxy42l+lMsPWU8xU7r7mN6PEilBNkuKAf5YJ7Xumg==
+  dependencies:
+    "@tensorflow/tfjs-backend-cpu" "4.20.0"
+    "@types/offscreencanvas" "~2019.3.0"
+    "@types/seedrandom" "^2.4.28"
+    seedrandom "^3.0.5"
+
+"@tensorflow/tfjs-converter@^4.20.0":
+  version "4.20.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-converter/-/tfjs-converter-4.20.0.tgz#e23549330e0bb693db9373efa892e695fd48186b"
+  integrity sha512-UJ2ntQ1TNtVHB5qGMwB0j306bs3KH1E1HKJ9Dxvrc6PUaivOV+CPKqmbidOFG5LylXeRC36JBdhe+gVT2nFHNw==
+
+"@tensorflow/tfjs-core@^4.20.0":
+  version "4.20.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-core/-/tfjs-core-4.20.0.tgz#6f40757d33e53489a4a165e59ef4768502db12a9"
+  integrity sha512-m/cc9qDc63al9UhdbXRUYTLGfJJlhuN5tylAX/2pJMLj32c8a6ThGDJYoKzpf32n5g3MQGYLchjClDxeGdXMPQ==
+  dependencies:
+    "@types/long" "^4.0.1"
+    "@types/offscreencanvas" "~2019.7.0"
+    "@types/seedrandom" "^2.4.28"
+    "@webgpu/types" "0.1.38"
+    long "4.0.0"
+    node-fetch "~2.6.1"
+    seedrandom "^3.0.5"
+
 "@trysound/sax@0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
@@ -1862,12 +1903,27 @@
   dependencies:
     "@types/node" "*"
 
+"@types/long@^4.0.1":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.2.tgz#b74129719fc8d11c01868010082d483b7545591a"
+  integrity sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==
+
 "@types/node@*", "@types/node@>=12.12.47", "@types/node@>=13.7.0":
   version "20.14.9"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-20.14.9.tgz#12e8e765ab27f8c421a1820c99f5f313a933b420"
   integrity sha512-06OCtnTXtWOZBJlRApleWndH4JsRVs1pDCc8dLSQp+7PpUpX3ePdHyeNSFTeSe7FtKyQkrlPvHwJOW3SLd8Oyg==
   dependencies:
     undici-types "~5.26.4"
+
+"@types/offscreencanvas@~2019.3.0":
+  version "2019.3.0"
+  resolved "https://registry.yarnpkg.com/@types/offscreencanvas/-/offscreencanvas-2019.3.0.tgz#3336428ec7e9180cf4566dfea5da04eb586a6553"
+  integrity sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==
+
+"@types/offscreencanvas@~2019.7.0":
+  version "2019.7.3"
+  resolved "https://registry.yarnpkg.com/@types/offscreencanvas/-/offscreencanvas-2019.7.3.tgz#90267db13f64d6e9ccb5ae3eac92786a7c77a516"
+  integrity sha512-ieXiYmgSRXUDeOntE1InxjWyvEelZGP63M+cGuquuRLuIKKT1osnkXjxev9B7d1nXSug5vpunx+gNlbVxMlC9A==
 
 "@types/readable-stream@^4.0.0", "@types/readable-stream@^4.0.5":
   version "4.0.14"
@@ -1881,6 +1937,11 @@
   version "1.20.2"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.20.2.tgz#97d26e00cd4a0423b4af620abecf3e6f442b7975"
   integrity sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==
+
+"@types/seedrandom@^2.4.28":
+  version "2.4.34"
+  resolved "https://registry.yarnpkg.com/@types/seedrandom/-/seedrandom-2.4.34.tgz#c725cd0fc0442e2d3d0e5913af005686ffb7eb99"
+  integrity sha512-ytDiArvrn/3Xk6/vtylys5tlY6eo7Ane0hvcx++TKo6RxQXuVfW0AF/oeWqAj9dN29SyhtawuXstgmPlwNcv/A==
 
 "@types/shimmer@^1.0.2":
   version "1.0.5"
@@ -2141,6 +2202,11 @@
   version "3.4.31"
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.4.31.tgz#af9981f57def2c3f080c14bf219314fc0dc808a0"
   integrity sha512-Yp3wtJk//8cO4NItOPpi3QkLExAr/aLBGZMmTtW9WpdwBCJpRM6zj9WgWktXAl8IDIozwNMByT45JP3tO3ACWA==
+
+"@webgpu/types@0.1.38":
+  version "0.1.38"
+  resolved "https://registry.yarnpkg.com/@webgpu/types/-/types-0.1.38.tgz#6fda4b410edc753d3213c648320ebcf319669020"
+  integrity sha512-7LrhVKz2PRh+DD7+S+PVaFd5HxaWQvoMqBbsV9fNJO1pjUs1P8bM2vQVNfk+3URTqbuTI7gkXi0rfsN0IadoBA==
 
 abbrev@1:
   version "1.1.1"
@@ -4912,6 +4978,11 @@ lodash@^4.17.14, lodash@^4.17.15:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
+long@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
+  integrity sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==
+
 long@^5.0.0:
   version "5.2.3"
   resolved "https://registry.yarnpkg.com/long/-/long-5.2.3.tgz#a3ba97f3877cf1d778eccbcb048525ebb77499e1"
@@ -5347,6 +5418,13 @@ node-fetch@^2.6.7:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
+  dependencies:
+    whatwg-url "^5.0.0"
+
+node-fetch@~2.6.1:
+  version "2.6.13"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.13.tgz#a20acbbec73c2e09f9007de5cda17104122e0010"
+  integrity sha512-StxNAxh15zr77QvvkmveSQ8uCQ4+v5FkvNTj0OESmiHu+VRi/gXArXtkWMElOsOUNLtUEvI4yS+rdtOHZTwlQA==
   dependencies:
     whatwg-url "^5.0.0"
 
@@ -6760,6 +6838,11 @@ scule@^1.0.0, scule@^1.2.0, scule@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/scule/-/scule-1.3.0.tgz#6efbd22fd0bb801bdcc585c89266a7d2daa8fbd3"
   integrity sha512-6FtHJEvt+pVMIB9IBY+IcCJ6Z5f1iQnytgyfKMhDKgmzYG+TeH/wx1y3l27rshSbLiSanrR9ffZDrEsmjlQF2g==
+
+seedrandom@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
+  integrity sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==
 
 "semver@2 >=2.2.1 || 3.x || 4 || 5", "semver@2 || 3 || 4 || 5", "semver@2.x || 3.x || 4 || 5", "semver@4 || 5", "semver@^2.3.0 || 3.x || 4 || 5", semver@^5.1.0:
   version "5.7.2"
