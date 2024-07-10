@@ -144,6 +144,7 @@ const triggerPrecenceEvents = async () => {
             // triggerEvent(navigationCommands.toFrame, event.flowId);
         }
     }
+}
 const triggerNoPrecenceEvents = async () => {
     if (config.value.precenceDetectorEvents.noPrecenceEvents) {
         for (const event of config.value.precenceDetectorEvents.noPrecenceEvents) {
