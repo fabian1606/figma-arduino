@@ -129,34 +129,32 @@ const navigationCommands = {
     restart: 'RESTART'
 }
 
-const triggerPrecenceEvents = () => {
+const triggerPrecenceEvents = async () => {
     if (config.value.precenceDetectorEvents.precenceEvents) {
-        config.value.precenceDetectorEvents.precenceEvents.forEach((event) => {
-                const frame = frames.value.find((fr) => fr.name == event.frameName);
-                if (frame) {
-                    navigateToPage(frame.id, event.flowId);
-                    console.log(event);
-                }
-                else {
-                    console.warn("Frame not found", event.frameName);
-                }
-
-                // frameId = frames.value.find((fr) => fr.name == event.frameName);
-                // triggerEvent(navigationCommands.toFrame, event.flowId);
-        });
-    }
-}
-const triggerNoPrecenceEvents = () => {
-    if (config.value.precenceDetectorEvents.noPrecenceEvents) {
-        config.value.precenceDetectorEvents.noPrecenceEvents.forEach((event) => {
+        for (const event of config.value.precenceDetectorEvents.precenceEvents) {
+            await new Promise(resolve => setTimeout(resolve, 50)); // 50ms delay
             const frame = frames.value.find((fr) => fr.name == event.frameName);
             if (frame) {
                 navigateToPage(frame.id, event.flowId);
-            }
-            else {
+                console.log(event);
+            } else {
                 console.warn("Frame not found", event.frameName);
             }
-        });
+            // frameId = frames.value.find((fr) => fr.name == event.frameName);
+            // triggerEvent(navigationCommands.toFrame, event.flowId);
+        }
+    }
+const triggerNoPrecenceEvents = async () => {
+    if (config.value.precenceDetectorEvents.noPrecenceEvents) {
+        for (const event of config.value.precenceDetectorEvents.noPrecenceEvents) {
+            await new Promise(resolve => setTimeout(resolve, 50)); // 50ms delay
+            const frame = frames.value.find((fr) => fr.name == event.frameName);
+            if (frame) {
+                navigateToPage(frame.id, event.flowId);
+            } else {
+                console.warn("Frame not found", event.frameName);
+            }
+        }
     }
 }
 
