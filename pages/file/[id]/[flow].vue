@@ -25,12 +25,12 @@
                 <label for="allow-flowchange">allow changes between flows</label>
                 <input type="checkbox" id="sync-events" v-model="config.allowFlowchange" @change="setConfig()">
                 <label for="precence-detector">activate precence Detector</label>
-                <input type="checkbox" id="precence-detector" v-model="config.precenceDetector" @change="setConfig()">
-                <button v-if="config.precenceDetector" @click="hideObjectDetectionPreview = false">
+                <input type="checkbox" id="precence-detector" v-model="connectObjectDetection" @change="setConfig()">
+                <button v-if="connectObjectDetection" @click="hideObjectDetectionPreview = false">
                     PrecenceDetectorPreview
                 </button>
             </div>
-            <div class="precenceSettings" v-if="showSettings">
+            <div class="precenceSettings" v-if="showSettings  && connectObjectDetection">
                 <div>
                     <label for="on-precence">event on Precence</label>
                     <input type="text" id="on-precence" placeholder="enter frame Name" v-model="precence">
@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <objectDetector v-if="config.precenceDetector" @precence="triggerPrecenceEvents()"  @noPrecence="triggerNoPrecenceEvents()" :hide="hideObjectDetectionPreview"
+        <objectDetector v-if="connectObjectDetection" @precence="triggerPrecenceEvents()"  @noPrecence="triggerNoPrecenceEvents()" :hide="hideObjectDetectionPreview"
             @close="hideObjectDetectionPreview = true" />
         <transformDiv @enterFigmaEmbedded="enterFigmaIdPage = true" :devmode="devmode" :projectId="fileId"
             :flowId="currentFlow" :size="windowSize"
@@ -91,6 +91,7 @@ const authStore = userStore();
 
 const hideObjectDetectionPreview = ref(true);
 const showSettings = ref(false);
+const connectObjectDetection = ref(false);
 
 const route = useRoute()
 const router = useRouter();
@@ -133,7 +134,8 @@ const triggerPrecenceEvents = () => {
         config.value.precenceDetectorEvents.precenceEvents.forEach((event) => {
                 const frame = frames.value.find((fr) => fr.name == event.frameName);
                 if (frame) {
-                    triggerEvent(navigationCommands.toFrame, frame.id);
+                    navigateToPage(frame.id, event.flowId);
+                    console.log(event);
                 }
                 else {
                     console.warn("Frame not found", event.frameName);
@@ -149,7 +151,7 @@ const triggerNoPrecenceEvents = () => {
         config.value.precenceDetectorEvents.noPrecenceEvents.forEach((event) => {
             const frame = frames.value.find((fr) => fr.name == event.frameName);
             if (frame) {
-                triggerEvent(navigationCommands.toFrame, frame.id);
+                navigateToPage(frame.id, event.flowId);
             }
             else {
                 console.warn("Frame not found", event.frameName);
@@ -217,6 +219,7 @@ const useFigmaApi = async () => {
     figmaService.getFile(authStore.authInfo.token, fileId.value)
         .then((res) => {
             const document = res.document;
+            console.log(document);
             canvases.value = document.children.filter((child) => child.type === 'CANVAS');
             if (canvases.value.length > 0) {
                 computeFigmaFrames(document);
@@ -375,8 +378,7 @@ const previousPage = (nodeId) => triggerEvent(navigationCommands.backwards, node
 const restart = (nodeId) => triggerEvent(navigationCommands.restart, nodeId);
 
 const navigateToPage = (nodeId, flowId) => {
-    const currentFrameObj = frames.value.find((fr) => fr.id === currentframe.value);
-    const targetFrameObj = frames.value.find((fr) => fr.id === nodeId);
+    console.log(flowId, currentFlow.value, nodeId);
 
     if (!flowId) {
         console.warn("No flowId provided", flowId);
@@ -384,9 +386,7 @@ const navigateToPage = (nodeId, flowId) => {
     }
 
     $contentDataService.triggerEvent(fileId.value, { type: 'NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS', data: { presentedNodeId: nodeId, flowId } })
-    const currentFlowId = currentFrameObj ? currentFrameObj.ParentFlow : "0:1";
     if (config.value.allowFlowchange || (currentFlow.value === flowId || flowId === "*")) {
-
         triggerEvent(navigationCommands.toFrame, nodeId);
     } else {
         console.warn("Flow change not allowed or target frame not found. flowId:");
@@ -410,7 +410,7 @@ const resetScreenDistortion = () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .dev-container {
     position: fixed;
     top: 0;
@@ -425,8 +425,19 @@ const resetScreenDistortion = () => {
     height: 100%;
     overflow: show;
 }
+.figma{
+    transform: scale(1.1);
+}
 
 .precence-settings {
     display: inline;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+
+* {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
 }
 </style>

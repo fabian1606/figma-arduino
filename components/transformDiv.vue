@@ -191,6 +191,7 @@ onMounted(() => {
   height: auto;
   outline: 0.5px solid red;
   transform-origin: 0 0;
+  overflow: hidden;
 }
 
 .corner {
